@@ -1,0 +1,78 @@
+:root {
+    --steel_blue: #4683CC;
+    --blue: #517CF4;
+    --blue_hover: #3a6aef;
+    --french_gray: #C3C4CC;
+    --periwinkle: #C9D8F9;
+    --celtic_blue: #0171D3;
+    --red:rgb(244, 81, 81);
+    --red_hover:rgb(235, 56, 56);
+    --white: #fff;
+    --gray: rgb(198, 198, 198);
+    --black: black;
+}
+
+body {
+    font-family: "Nunito", sans-serif;
+}
+
+.navContainer {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure it's above other content */
+  background-color: var(--white);
+}
+
+.mainText {
+  text-decoration: none;
+  color: var(--black);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+h1, a, p {
+  font-size: 20px;
+}
+
+.userProfile {
+  font-size: 30px;
+}
+
+.btnMyCart {
+  width: 120px;
+  background-color: var(--blue_hover);
+  color: var(--white);
+}
+
+.btnMyCart:hover, .btnMyCart.btn:active {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+
+.btnMyProfile {
+  background-color: var(--blue);
+  color: var(--white);
+
+}
+
+.btnMyProfile:hover, .btnMyProfile.btn:active{
+  background-color: var(--blue_hover) ;
+  color: var(--white) ;
+}
+
+.btnMyProfile:not(:hover) {
+  background-color: var(--blue_hover) !important;
+  color: var(--white) !important;
+}
+
+.dropdown-item {
+  font-size: 17px;
+}
+
+.dropdown-item:active {
+  color:black;
+  background-color: #f2f2f2;
+}
+

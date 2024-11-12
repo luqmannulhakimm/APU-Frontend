@@ -1,0 +1,75 @@
+.mainTextContainer {
+    background-color: var(--periwinkle);
+    justify-content: center; align-items: center; margin:auto;
+    color: var(--white);
+    min-width: 120px;
+
+}
+
+.secondMainTextContainer {
+    background-color: var(--white);
+    color: var(--black);
+
+}
+
+.MyCartText {
+    font-size: 25px;
+    margin: auto;
+}
+
+.card {
+    border: 1px solid var(--gray);
+}
+
+.cartContainer {
+    background-color: var(--periwinkle);
+    color: var(--white);;
+}
+
+
+.btnCart {
+    background-color: var(--blue_hover);
+    color: var(--white);
+}
+
+.btnCart:hover, .btnCart.btn:active {
+    background-color: var(--blue);
+    color: var(--white);
+}
+
+.btnDeleteCart {
+    background-color: var(--red);
+    color: var(--white);
+}
+
+.btnDeleteCart:hover, .btnDeleteCart.btn:active {
+    background-color: var(--red_hover);
+    color: var(--white);
+}
+
+.payTextContainer {
+    background-color: var(--periwinkle);
+    color: var(--white);
+    position: fixed;
+    bottom: 0;
+    left: 80%;
+    transform: translateX(-50%);
+    width: 15%;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.insidePayContainer {
+    background-color: var(--white);
+}
+
+.btnPay {
+    background-color: var(--blue_hover);
+    color: var(--white);
+}
+
+.btnPay:hover, .btnPay.btn:active  {
+    background-color: var(--blue);
+    color: var(--white);
+}

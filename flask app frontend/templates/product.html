@@ -1,0 +1,121 @@
+{% extends "layout/layout.html" %}
+{% block content %}
+
+<div class="container-fluid p-3 mt-3">
+    {% for product in products %}
+    <div class="container text-center mb-2">
+
+        <div class="card p-3">
+            <div class="container p-3 text-center">
+                <img src="/static/p-images/{{ product.id }}.jpeg" class="card-img-top" alt="..." style="width: 300px; height: 300px;">
+            </div>
+            <div class="card-body"> 
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text">RM {{ product.price }}</p>
+              <a class="btn btn-primary mb-2 addToCartBtn" data-product-id="{{ product.id }}" style="width: 250px;"><i class="fa-solid fa-plus me-2"></i>Add To Cart</a>
+              <a class="btn btn-primary mb-2 buyNowBtn" data-product-id="{{ product.id }}"  style="width: 250px;"><i class="fa-solid fa-cart-shopping me-2"></i>Buy Now</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+
+        <div class="card p-3">
+            <h5 class="card-title text-center">Product Description</h5>
+            <div class="container">
+                <p style="font-size: 15px;">{{ product.description }}</p>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+
+    
+
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addToCartButtons = document.querySelectorAll(".addToCartBtn");
+        
+        addToCartButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const productId = this.dataset.productId;
+                addToCart(productId);
+            });
+        });
+
+        function addToCart(productId) {
+            // Send AJAX request to Flask server using fetch
+            fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: productId }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    $('#successModal').modal('show');
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log(data.message); // Log the response message
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const buyNowButtons = document.querySelectorAll(".buyNowBtn");
+        
+        buyNowButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const productId = this.dataset.productId;
+                addToCart(productId, redirectToCart);
+            });
+        });
+
+        function addToCart(productId, callback) {
+            // Send AJAX request to Flask server using fetch
+            fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: productId }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log(data.message); // Log the response message
+                if (callback) {
+                    callback(); // Call the callback function if provided
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+        }
+
+        function redirectToCart() {
+            // Redirect to the cart page
+            window.location.href = "{{ url_for('my_cart') }}";
+        }
+    });
+</script>
+
+
+{% endblock %}

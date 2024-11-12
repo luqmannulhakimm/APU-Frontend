@@ -1,0 +1,35 @@
+:root {
+    --steel_blue: #4683CC;
+    --blue: #517CF4;
+    --french_gray: #C3C4CC;
+    --periwinkle: #C9D8F9;
+    --celtic_blue: #0171D3;
+    --white: #fff;
+    --gray: rgb(198, 198, 198);
+  }
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    background-color: var(--blue);
+}
+
+.maincontainer {
+    background-color: var(--white);
+    width: 600px;
+    height: auto;
+}
+
+.btnLogin {
+    background-color: var(--celtic_blue);
+    color: var(--white);
+}
+
+.btnLogin:hover {
+    background-color: var(--celtic_blue);
+    color: var(--white);
+}

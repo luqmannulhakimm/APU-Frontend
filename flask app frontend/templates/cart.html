@@ -1,0 +1,209 @@
+{% extends "layout/my_cart_layout.html" %}
+{% block content %}
+
+
+
+
+
+<div class="mainTextContainer container shadow mt-3 p-3 rounded" style="width: 30%;">
+    <div class="secondMainTextContainer container p-3">
+        <h1 class="MyCartText text-center" >My Cart</h1>
+    </div>
+</div>
+
+
+<div class="cartContainer container mt-3 p-3 mb-3 rounded shadow" style="width: 750px;">
+{% if products %}
+    {% for product in products %}
+    
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4 p-3">
+                <a href="{{ url_for('product', id=product.id) }}" class="card-link" style="text-decoration: none; color: black;">
+                    <img src="/static/p-images/{{ product.id  }}.jpeg" class="img-fluid rounded-start" alt="..." style="width: 300px; height: 250px; margin: auto;">
+                </a>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">{{ product.name }}</h5>
+                    <div class="input mb-2" style="justify-content: center; align-items: center; width: 350px;">
+                        <div class="container">
+                            <a class="btnCart btn" style="width: 350px; margin-left: -13px;">Quantity</a>
+                        </div>
+                        <div class="container-fluid mt-2" style="display: flex; justify-content: center; padding: 0;">
+                            <div class="input" style="margin-right: 5px;">
+                                <a class="btnCart btn minus-btn" type="button" data-productid="{{ product.id }}">-</a>
+                            </div>
+                            <input type="text" style="width: 100%;" class="form-control text-center quantity" value="{{ product.quantity }}" id="quantity_{{ product.id }}" readonly>
+                            <div class="input" style="margin-left: 5px;">
+                                <a class="btnCart btn plus-btn" type="button" data-productid="{{ product.id }}">+</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a class="btnCart btn" style="width: 150px;">Total Price</a>
+                        <a class="btnCart btn" style="width: 200px;">RM {{ product.price }}</a>
+                        <div class="container mt-2"></div>
+                        <a class="btnDeleteCart btn" data-productid="{{ product.id }}" style="width: 355px;" data-toggle="modal" data-target="#confirmDeleteModal">
+                            <i class="fa-solid fa-trash me-2"></i>Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p id="notFound" >No products found.</p>
+{% endif %}
+
+</div>
+
+<!-- Container for Total Price -->
+<div class="payTextContainer container shadow mt-3 mb-3 p-3 rounded text-center" style="width: 35%;">
+    <div class="insidePayContainer container p-3">
+        <p class="MyCartText text-center" style="color: black">Total : RM {{ total_price }}</p>
+        <a id="payNowBtn" class="btnPay btn mt-2" style="width: 50%;">Pay Now</a>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const payNowButton = document.getElementById("payNowBtn");
+        const notFoundMessage = document.getElementById("notFound");
+
+        if (notFoundMessage) {
+            payNowButton.disabled = true;
+            payNowButton.textContent = "No Item Found";
+        }
+
+        payNowButton.addEventListener("click", function() {
+            if (!notFoundMessage) {
+                payNow();
+            }
+        });
+
+        function payNow() {
+            // Send AJAX request to Flask server to initiate payment
+            fetch('/payment', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log(data.message); // Log the response message
+                window.location.href = "{{ url_for('success') }}"; // Redirect to success page
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add click event listener to delete buttons
+        document.querySelectorAll('.btnDeleteCart').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var productId = this.getAttribute('data-productid');
+                $('#confirmDeleteModal').modal('show'); // Show the modal
+                $('#confirmDeleteBtn').data('productid', productId); // Set the product id in the modal button's data attribute
+            });
+        });
+
+        // Handle delete confirmation
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            var productId = $(this).data('productid');
+            fetch('/delete-product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                location.reload(); // Reload the page after successful deletion
+            })
+            .catch(error => {
+                // Handle fetch errors
+                console.error('Error:', error);
+                alert('Error occurred while deleting the product');
+            });
+            $('#confirmDeleteModal').modal('hide'); // Hide the modal after the delete operation
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Plus button click event
+        document.querySelectorAll('.plus-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var productId = this.getAttribute('data-productid');
+                var quantityInput = document.getElementById('quantity_' + productId);
+                var quantity = parseInt(quantityInput.value);
+                quantity++;
+                quantityInput.value = quantity;
+                // Call a function here to update the quantity on the server
+                updateQuantity(productId, quantity);
+            });
+        });
+    
+        // Minus button click event
+        document.querySelectorAll('.minus-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var productId = this.getAttribute('data-productid');
+                var quantityInput = document.getElementById('quantity_' + productId);
+                var quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantity--;
+                    quantityInput.value = quantity;
+                    // Call a function here to update the quantity on the server
+                    updateQuantity(productId, quantity);
+                }
+            });
+        });
+    
+        // Function to update quantity on the server
+        function updateQuantity(productId, quantity) {
+            // Make an AJAX request to update the quantity
+            // Example using fetch API
+            fetch('/update-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: quantity
+                })
+            }).then(response => {
+                location.reload();
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    });
+</script>
+
+
+{% endblock %}
